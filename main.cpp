@@ -1,74 +1,67 @@
 #include <SFML/Graphics.hpp>
-#include <iostream>
-#include <vector>
 
-const int width = 800;
-const int height = 600;
-const int blockSize = 40;
-const int rows = 15;
-const int cols = 20;
-
-std::vector<std::vector<int>> maze = {
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    {1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1},
-    {1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1},
-    {1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1},
-    {1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1},
-    {1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1},
-    {1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1},
-    {1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1},
-    {1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1},
-    {1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1},
-    {1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1},
-    {1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1},
-};
+    
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(width, height), "SFML Maze Game");
+    sf::RenderWindow window(sf::VideoMode(500, 500), "Dog", sf::Style::Close);
 
-    sf::RectangleShape player(sf::Vector2f(blockSize, blockSize));
+    //-----Создание границ игрового поля----------
+
+    sf::RectangleShape topBorder(sf::Vector2f(500, 10));
+    topBorder.setFillColor(sf::Color::Green);
+    topBorder.setPosition(0, 0);
+
+    sf::RectangleShape bottomBorder(sf::Vector2f(500, 10));
+    bottomBorder.setFillColor(sf::Color::Green);
+    bottomBorder.setPosition(0, 490);
+
+    sf::RectangleShape leftBorder(sf::Vector2f(10, 500));
+    leftBorder.setFillColor(sf::Color::Green);
+    leftBorder.setPosition(0, 0);
+
+    sf::RectangleShape rightBorder(sf::Vector2f(10, 500));
+    rightBorder.setFillColor(sf::Color::Green);
+    rightBorder.setPosition(490, 10);
+
+    //-----Создание игрока----------
+    sf::RectangleShape player(sf::Vector2f(40, 40));
     player.setFillColor(sf::Color::Red);
-    player.setPosition(0, 0);
+    player.setPosition(10, 10);
 
-    sf::RectangleShape target(sf::Vector2f(blockSize, blockSize));
-    target.setFillColor(sf::Color::Green);
-    target.setPosition(width - blockSize, height - blockSize);
-
+    //-----Цикл игры----------
     while (window.isOpen())
     {
         sf::Event event;
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
-            {
                 window.close();
-            }
         }
 
-        window.clear(sf::Color::Black);
-
-        // Отрисовка лабиринта
-        for (int i = 0; i < rows; ++i)
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && player.getPosition().x > 10)
         {
-            for (int j = 0; j < cols; ++j)
-            {
-                if (maze[i][j] == 1)
-                {
-                    sf::RectangleShape wall(sf::Vector2f(blockSize, blockSize));
-                    wall.setFillColor(sf::Color::White);
-                    wall.setPosition(j * blockSize, i * blockSize);
-                    window.draw(wall);
-                }
-            }
+            player.move(-0.1, 0);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && player.getPosition().x < 450)
+        {
+            player.move(0.1, 0);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && player.getPosition().y > 10)
+        {
+            player.move(0, -0.1);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && player.getPosition().y < 450)
+        {
+            player.move(0, 0.1);
         }
 
+        window.clear();
+        window.draw(topBorder);
+        window.draw(bottomBorder);
+        window.draw(leftBorder);
+        window.draw(rightBorder);
         window.draw(player);
-        window.draw(target);
-
         window.display();
     }
 
